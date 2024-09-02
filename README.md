@@ -6,7 +6,7 @@ When ready, user shoult send image to forras-imageserver REST Api that store fil
 
 ## Required software
 - SANE
-- ImageMagic
+- ImageMagick
 
 Install on Ubuntu
 ```bash
