@@ -36,7 +36,7 @@ async function scanImage(
 	return result;
 }
 
-async function getDeviceInfos(): Promise<string> {
+async function getDeviceInfos(resetConfig: boolean): Promise<string> {
 	let result: {
 		return: string;
 		devices: { assetId: string; assetName: string }[];
@@ -45,22 +45,29 @@ async function getDeviceInfos(): Promise<string> {
 		devices: [],
 	};
 
-	const promise = new Promise((resolve, reject) => {
-		const scanProc = exec(
-			'scanimage -f "%d\t%m\n"',
-			(error: any, stdout: any, stderr: any) => {
-				if (error) {
-					reject(`error: ${error.message}`);
-				}
-				if (stderr) {
-					reject(`stderr: ${stderr}`);
-				}
-				resolve(stdout);
-			},
-		);
-	});
+	var devicesStr: string;
+
+	if (fs.existsSync("config.ini") && !resetConfig) {
+		devicesStr = fs.readFileSync("config.ini", "utf8");
+	} else {
+		const promise = new Promise((resolve, reject) => {
+			const scanProc = exec(
+				'scanimage -f "%d\t%m\n"',
+				(error: any, stdout: any, stderr: any) => {
+					if (error) {
+						reject(`error: ${error.message}`);
+					}
+					if (stderr) {
+						reject(`stderr: ${stderr}`);
+					}
+					resolve(stdout);
+				},
+			);
+		});
+		devicesStr = (await promise) as string;
+		fs.writeFileSync("config.ini",devicesStr);
+	}
 	try {
-		const devicesStr = (await promise) as string;
 		const lines = devicesStr.split('\n');
 		lines.forEach((deviceInfoLine) => {
 			if (deviceInfoLine != '') {

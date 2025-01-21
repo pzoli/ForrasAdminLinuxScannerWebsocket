@@ -42,7 +42,7 @@ wss.on('connection', function connection(ws: any, req: any) {
 				break;
 			}
 			case 'deviceinfo': {
-				ws.send(await getDeviceInfos());
+				ws.send(await getDeviceInfos(mObj.resetConfig));
 				break;
 			}
 			default:
