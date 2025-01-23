@@ -14,6 +14,9 @@ async function scanImage(
 ): Promise<string> {
 	const mode =
 		color_mode == 1 ? 'Color' : color_mode == 2 ? 'Gray' : 'Lineart';
+	if (assetId == null || assetId == '') {
+		throw 'error: assetId is empty';
+	}
 	assetId = assetId.replace(/\\/g, '\\\\').replace(/\"/g, '\\"');
 	const promise = new Promise((resolve, reject) => {
 		const command = `scanimage -d "${assetId}" --format tiff --mode ${mode} --resolution ${resolution} -l 0mm -t 0mm|convert - -quality 75 scanned.jpg`;
@@ -27,6 +30,7 @@ async function scanImage(
 			},
 		);
 	});
+
 	var result: string;
 	try {
 		result = (await promise) as string;

@@ -37,7 +37,7 @@ wss.on('connection', function connection(ws: any, req: any) {
 					}
 				} catch (e) {
 					console.log(e);
-					ws.send(e);
+					ws.send(JSON.stringify({result:"error",message: e}));
 				}
 				break;
 			}
